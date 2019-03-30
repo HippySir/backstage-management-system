@@ -1,9 +1,13 @@
-import Vue from 'vue'
-import App from './App.vue'
+import Vue from 'vue';
+import App from './App.vue';
 
+// 引入公共样式的文件
+import './assets/base.css';
 Vue.config.productionTip = false;
+
 // 导入路由
 import router from './router.js';
+
 // 导入MUI组件
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
