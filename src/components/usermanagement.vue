@@ -201,7 +201,12 @@ export default {
       console.log(index);
       console.log(row);
     },
-    handleDelete(index, row) {
+    async handleDelete(index, row) {
+      let res = await this.$axios.delete(`users/${row.id}`);
+      if(res.data.meta.status === 200){
+        this.searchUser();
+      }
+      console.log(res);
       console.log(index);
       console.log(row);
     },
