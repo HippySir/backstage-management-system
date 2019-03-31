@@ -16,7 +16,7 @@
         </el-col>
         <el-col :span="2">
           <div class="grid-content bg-purple">
-                <el-button type="danger" plain>退出登陆</el-button>
+                <el-button type="danger" plain @click="logout">退出登陆</el-button>
           </div>
         </el-col>
       </el-row>
@@ -53,7 +53,24 @@
 </template>
 
 <script>
-export default {};
+export default {
+  name:"index",
+  methods: {
+    logout(){
+      window.sessionStorage.removeItem("token");
+      this.$router.push("/login");
+    }
+  },
+  beforeCreate() {
+    if( window.sessionStorage.getItem("token")){
+
+    }else{
+       this.$message.error("请先登录！");
+      this.$router.push("/login");
+    }
+  },
+};
+
 </script>
 
 <style lang="scss" scoped="" type="text/css">

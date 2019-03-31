@@ -45,14 +45,22 @@ export default {
   },
   methods: {
     submitlogin(ruleLogin) {
-      this.$refs[ruleLogin].validate(valid => {
+      this.$refs[ruleLogin].validate(async valid => {
         if (valid) {
-          alert("submit!");
+         let res = await this.$axios.post("login",this.ruleLogin);
+         if(res.data.meta.status === 400){
+            this.$message.error(res.data.meta.msg);
+         }else if(res.data.meta.status === 200){
+           this.$message.success(res.data.meta.msg);
+          //  将token存储起来
+          window.sessionStorage.setItem("token",res.data.data.token);
+          // 跳转到主页
+          this.$router.push("/");
+         }
         } else {
-          this.$message({
-            message: "验证没有通过！",
-            type: "warning"
-          });
+          this.$message.error(
+           "数据格式错误，请根据提示修改"
+        );
           return false;
         }
       });

@@ -12,6 +12,12 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
 
+// 导入axios
+import axios from 'axios';
+axios.defaults.baseURL = "http://localhost:8888/api/private/v1/";
+Vue.prototype.$axios = axios;
+// 设置基地址
+
 // s
 new Vue({
   el:"#app",
