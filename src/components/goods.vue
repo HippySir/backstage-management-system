@@ -1,6 +1,6 @@
 <template>
   <div class="usermageement">
-    <my-bread secondnav="用户管理呀" threenav="用户列表呀"></my-bread>
+   <my-bread secondnav="商品列表" threenav="商品管理"></my-bread>
     <!-- 搜索栏和按钮 -->
     <el-row>
       <el-col :span="6">
@@ -108,27 +108,25 @@
     </el-dialog>
     <!-- 分配角色弹出框 -->
     <el-dialog title="分配角色" :visible.sync="distributeVisible">
-      <el-form>
-        <el-form-item label="用户名:">{{ editRole.username}}</el-form-item>
+      <el-form :rules="addrules" ref="addform">
+        <el-form-item label="用户名:" label-width="120px">{{ editRole.username}}</el-form-item>
         <!-- 下拉框 -->
-        <el-form-item label="请选择角色">
-          <el-select v-model="editRole.role_name" placeholder="请选择">
-            <el-option
-              v-for="item in roleList"
-              :key="item.id"
-              :label="item.roleName"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
+        <el-select v-model="editRole.role_name" placeholder="请选择">
+          <el-option
+            v-for="item in roleList"
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.roleName"
+          ></el-option>
+        </el-select>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="distributeVisible = false">取 消</el-button>
-        <el-button type="primary" @click="distributeUserInfo">确 定</el-button>
+        <el-button type="primary" @click="distributeUserInfo('addform')">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 删除弹出的对话框 -->
-    <el-dialog title="温馨提示" :visible.sync="deleteVisible" width="30%">
+    <el-dialog title="温馨提示" :visible.sync="deleteVisible" width="30%" :before-close="handleClose">
       <span>你真的确定要删除这个用户吗？不考虑一下吗？</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="deleteVisible = false">良心发现</el-button>
@@ -191,19 +189,17 @@ export default {
         username: [{ required: true }]
       },
       // 删除对话框的函数
-      deleteVisible: false,
-      deleteUserInfo: {}
+      deleteVisible:false,
+      deleteUserInfo:{},
     };
   },
   methods: {
     // 分页器的函数
     handleSizeChange(val) {
-      this.requireparam.pagesize = val;
       this.searchUser();
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
-      this.requireparam.pagenum = val;
       this.searchUser();
       console.log(`当前页: ${val}`);
     },
@@ -213,16 +209,6 @@ export default {
       this.distributeVisible = true;
       let res = await this.$axios.get("roles");
       this.roleList = res.data.data;
-    },
-    async distributeUserInfo() {
-      let res = await this.$axios.put(`users/${this.editRole.id}/role`, {
-        rid: this.editRole.role_name
-      });
-      if (res.data.meta.status === 200) {
-        this.searchUser();
-      }
-      this.distributeVisible = false;
-      console.log(res);
     },
     // 编辑用户的函数
     async editUserInfo(data) {
@@ -263,13 +249,13 @@ export default {
       console.log(row);
     },
     // 删除用户的方法
-    handleDelete(index, row) {
+   handleDelete(index, row) {
       this.deleteVisible = true;
       this.deleteUserInfo = row;
     },
-    async deleteUserManger() {
-      await this.$axios.delete(`users/${this.deleteUserInfo.id}`);
-      this.searchUser();
+     async deleteUserManger(){
+     await this.$axios.delete(`users/${this.deleteUserInfo.id}`);
+    this.searchUser();     
     },
     switchEdit(index, row) {},
     // 用户状态改变的方法
@@ -296,7 +282,7 @@ export default {
 <style  lang="scss" scoped="" type="text/css">
 .usermageement {
   background-color: #e9eef3;
-
+ 
   .inputcontent {
     padding-left: 10px;
   }

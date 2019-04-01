@@ -8,6 +8,7 @@ import index from './components/index.vue';
 import users from './components/usermanagement.vue';
 import roles from './components/roles.vue';
 import rights from './components/rights.vue';
+import goods from './components/goods.vue';
 // 设置路由规则
 const routes = [
     {path:'/',component:index,
@@ -15,6 +16,7 @@ const routes = [
         {path:'users',component:users},
         {path:'roles',component:roles},
         {path:'rights',component:rights},
+        {path:'goods',component:goods},
     ]
     },
     {path:'/login',component:login},
@@ -23,6 +25,7 @@ const routes = [
             {path:'users',component:users},
             {path:'roles',component:roles},
             {path:'rights',component:rights},
+            {path:'goods',component:goods},
         ]
     },
 ]
