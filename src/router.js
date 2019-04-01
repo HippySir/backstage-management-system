@@ -5,18 +5,18 @@ Vue.use(VueRouter);
 // 导入组件
 import login from './components/login.vue';
 import index from './components/index.vue';
-import usermanagement from './components/usermanagement.vue';
+import users from './components/usermanagement.vue';
 // 设置路由规则
 const routes = [
     {path:'/',component:index,
     children:[
-        {path:'usermanagement',component:usermanagement},
+        {path:'users',component:users},
     ]
     },
     {path:'/login',component:login},
     {path:'/index',component:index,
         children:[
-            {path:'usermanagement',component:usermanagement},
+            {path:'users',component:users},
         ]
     },
 ]

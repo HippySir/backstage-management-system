@@ -30,15 +30,16 @@
       default-active="2"
       class="el-menu-vertical-demo"
       >
-      <el-submenu index="1">
+      <el-submenu :index="item.id +'' " v-for="item in menulist">
         <template slot="title">
           <i class="el-icon-location"></i>
-          <span>导航一</span>
+          <span>{{item.authName}}</span>
         </template>
-        <el-menu-item-group>
-             <el-menu-item index="usermanagement">
+        <el-menu-item-group v-for="its in item.children">
+             <el-menu-item :index="its.path">
                  <span class="el-icon-setting"></span>
-                 选项1</el-menu-item>
+                 {{its.authName}}
+              </el-menu-item>
         </el-menu-item-group>
       </el-submenu>
      
@@ -55,6 +56,11 @@
 <script>
 export default {
   name:"index",
+  data() {
+    return {
+      menulist:[],
+    }
+  },
   methods: {
     logout(){
       window.sessionStorage.removeItem("token");
@@ -68,6 +74,10 @@ export default {
        this.$message.error("请先登录！");
       this.$router.push("/login");
     }
+  },
+  async created() {
+   let res = await this.$axios.get('menus');
+   this.menulist = res.data.data;
   },
 };
 

@@ -55,7 +55,7 @@
               size="mini"
               @click="handleAllot(scope.$index, scope.row)"
               plain
-              icon="el-icon-message"
+              icon="el-icon-check"
             ></el-button>
           </template>
         </el-table-column>
@@ -63,10 +63,13 @@
     </el-row>
     <!-- 分页器 -->
     <el-pagination
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="requireparam.pagenum"
+      :page-sizes="[5, 10, 15, 18]"
+      :page-size="requireparam.pagesize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
+      :total="total"
     ></el-pagination>
     <!-- 添加的弹出框 -->
     <el-dialog title="添加用户" :visible.sync="addVisible">
@@ -90,7 +93,7 @@
       </div>
     </el-dialog>
     <!-- 编辑的弹出框 -->
-       <el-dialog title="修改用户" :visible.sync="editVisible">
+    <el-dialog title="修改用户" :visible.sync="editVisible">
       <el-form :model="editform" :rules="editrules" ref="editform">
         <el-form-item label="用户名" label-width="120px" prop="username">
           <el-input v-model="editform.username" autocomplete="off" disabled></el-input>
@@ -107,7 +110,27 @@
         <el-button type="primary" @click="editUserInfo('editform')">确 定</el-button>
       </div>
     </el-dialog>
-
+    <!-- 分配角色弹出框 -->
+    <el-dialog title="分配角色" :visible.sync="distributeVisible">
+      <el-form :rules="addrules" ref="addform">
+        <el-form-item label="用户名:" label-width="120px">
+         {{ editRole.username}}
+        </el-form-item>
+        <!-- 下拉框 -->
+        <el-select v-model="editRole.role_name" placeholder="请选择">
+          <el-option
+            v-for="item in roleList"
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.roleName"
+          ></el-option>
+        </el-select>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="distributeVisible = false">取 消</el-button>
+        <el-button type="primary" @click="distributeUserInfo('addform')">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -115,20 +138,21 @@
 export default {
   data() {
     return {
+      // 分页器的当前的分页
       requireparam: {
         query: "",
         pagenum: 1,
-        pagesize: 10
+        pagesize: 5
       },
       userList: [],
       total: 0,
       // 弹出框是否弹出的字段
       addVisible: false,
       addform: {
-        username: "冯练",
+        username: "hahah",
         password: 123456,
         email: "737338933@qq.com",
-        mobile: 123456789456,
+        mobile: 123456789456
       },
       // 表单验证的规则
       addrules: {
@@ -146,45 +170,65 @@ export default {
           }
         ]
       },
+      //  分配角色弹出框
+      distributeVisible: false,
+      roleList:[],
+      editRole:{},
+
       // 编辑框是否显示的字段
-      editVisible:false,
-      editform:{
-        username:"",
+      editVisible: false,
+      editform: {
+        username: "",
         email: "737338933@qq.com",
-        mobile: 123456789456,
+        mobile: 123456789456
       },
-    //  编辑的规则
-     editrules:{
-        username: [
-          { required: true, },
-        ],
-     }
+      //  编辑的规则
+      editrules: {
+        username: [{ required: true }]
+      }
     };
   },
   methods: {
+    // 分页器的函数
+    handleSizeChange(val) {
+      this.searchUser();
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      this.searchUser();
+      console.log(`当前页: ${val}`);
+    },
+    // 分配角色的函数
+   async handleAllot(index,row) {
+      this.editRole = row;
+      this.distributeVisible = true;
+      let res = await this.$axios.get('roles');
+      this.roleList = res.data.data;
+     
+
+    },
     // 编辑用户的函数
-   async editUserInfo(data){
-      let res = await this.$axios.put(`users/${this.editform.id}`,{
-        email:this.editform.email,
-        mobile:this.editform.mobile,
+    async editUserInfo(data) {
+      let res = await this.$axios.put(`users/${this.editform.id}`, {
+        email: this.editform.email,
+        mobile: this.editform.mobile
       });
       console.log(res);
       this.searchUser();
-      this. editVisible = false;
+      this.editVisible = false;
     },
     // 新增用户信息的提交
     submitUserInfo(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          let res = this.$axios.post('users',this.addform);
+          let res = this.$axios.post("users", this.addform);
           this.searchUser();
         } else {
-           this.$message.error('信息的输入的格式不正确，请重新输入！');
+          this.$message.error("信息的输入的格式不正确，请重新输入！");
           return false;
         }
-         this.addVisible = false
+        this.addVisible = false;
       });
-     
     },
     // 点击按钮的搜索函数
     async searchUser() {
@@ -203,7 +247,7 @@ export default {
     },
     async handleDelete(index, row) {
       let res = await this.$axios.delete(`users/${row.id}`);
-      if(res.data.meta.status === 200){
+      if (res.data.meta.status === 200) {
         this.searchUser();
       }
       console.log(res);
@@ -217,7 +261,7 @@ export default {
         `users/${statuschange.id}/state/${statuschange.mg_state}`
       );
     }
-    // 获取永华的信息的函数
+    // 获取用户的信息的函数
   },
   async created() {
     this.searchUser();
