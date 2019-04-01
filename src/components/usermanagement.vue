@@ -1,10 +1,6 @@
 <template>
   <div class="usermageement">
-    <el-breadcrumb separator-class="el-icon-arrow-right" class="bread">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-      <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-    </el-breadcrumb>
+   <my-bread secondnav="用户管理呀" threenav="用户列表呀"></my-bread>
     <!-- 搜索栏和按钮 -->
     <el-row>
       <el-col :span="6">
@@ -113,9 +109,7 @@
     <!-- 分配角色弹出框 -->
     <el-dialog title="分配角色" :visible.sync="distributeVisible">
       <el-form :rules="addrules" ref="addform">
-        <el-form-item label="用户名:" label-width="120px">
-         {{ editRole.username}}
-        </el-form-item>
+        <el-form-item label="用户名:" label-width="120px">{{ editRole.username}}</el-form-item>
         <!-- 下拉框 -->
         <el-select v-model="editRole.role_name" placeholder="请选择">
           <el-option
@@ -130,6 +124,14 @@
         <el-button @click="distributeVisible = false">取 消</el-button>
         <el-button type="primary" @click="distributeUserInfo('addform')">确 定</el-button>
       </div>
+    </el-dialog>
+    <!-- 删除弹出的对话框 -->
+    <el-dialog title="温馨提示" :visible.sync="deleteVisible" width="30%" :before-close="handleClose">
+      <span>你真的确定要删除这个用户吗？不考虑一下吗？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="deleteVisible = false">良心发现</el-button>
+        <el-button type="primary" @click="deleteUserManger">忍痛下手</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -172,8 +174,8 @@ export default {
       },
       //  分配角色弹出框
       distributeVisible: false,
-      roleList:[],
-      editRole:{},
+      roleList: [],
+      editRole: {},
 
       // 编辑框是否显示的字段
       editVisible: false,
@@ -185,7 +187,10 @@ export default {
       //  编辑的规则
       editrules: {
         username: [{ required: true }]
-      }
+      },
+      // 删除对话框的函数
+      deleteVisible:false,
+      deleteUserInfo:{},
     };
   },
   methods: {
@@ -199,13 +204,11 @@ export default {
       console.log(`当前页: ${val}`);
     },
     // 分配角色的函数
-   async handleAllot(index,row) {
+    async handleAllot(index, row) {
       this.editRole = row;
       this.distributeVisible = true;
-      let res = await this.$axios.get('roles');
+      let res = await this.$axios.get("roles");
       this.roleList = res.data.data;
-     
-
     },
     // 编辑用户的函数
     async editUserInfo(data) {
@@ -245,14 +248,14 @@ export default {
       console.log(index);
       console.log(row);
     },
-    async handleDelete(index, row) {
-      let res = await this.$axios.delete(`users/${row.id}`);
-      if (res.data.meta.status === 200) {
-        this.searchUser();
-      }
-      console.log(res);
-      console.log(index);
-      console.log(row);
+    // 删除用户的方法
+   handleDelete(index, row) {
+      this.deleteVisible = true;
+      this.deleteUserInfo = row;
+    },
+     async deleteUserManger(){
+     await this.$axios.delete(`users/${this.deleteUserInfo.id}`);
+    this.searchUser();     
     },
     switchEdit(index, row) {},
     // 用户状态改变的方法
@@ -279,13 +282,7 @@ export default {
 <style  lang="scss" scoped="" type="text/css">
 .usermageement {
   background-color: #e9eef3;
-  .bread {
-    height: 50px;
-    line-height: 50px;
-    padding-left: 10px;
-    padding-right: 0;
-    background-color: #d3dce6;
-  }
+ 
   .inputcontent {
     padding-left: 10px;
   }
