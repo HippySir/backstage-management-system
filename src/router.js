@@ -17,17 +17,12 @@ const routes = [
         {path:'roles',component:roles},
         {path:'rights',component:rights},
         {path:'goods',component:goods},
+        {path:'',redirect:'users'},
     ]
     },
+    
     {path:'/login',component:login},
-    {path:'/index',component:index,
-        children:[
-            {path:'users',component:users},
-            {path:'roles',component:roles},
-            {path:'rights',component:rights},
-            {path:'goods',component:goods},
-        ]
-    },
+  
 ]
 
 // 实例化路由对象
