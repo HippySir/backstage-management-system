@@ -1,29 +1,19 @@
 <template>
   <div class="usermageement">
-   <my-bread secondnav="商品列表" threenav="商品管理"></my-bread>
+    <my-bread secondnav="商品管理" threenav="商品分类"></my-bread>
     <!-- 搜索栏和按钮 -->
     <el-row>
-      <el-col :span="6">
-        <el-input
-          placeholder="请输入内容"
-         
-          class="input-with-select"
-       
-        >
-          <el-button slot="append" icon="el-icon-search"></el-button>
-        </el-input>
-      </el-col>
+     
       <el-col :span="12" class="inputcontent">
-        <el-button type="primary" plain >添加商品</el-button>
+        <el-button type="primary" plain >添加分类</el-button>
       </el-col>
       <!-- 表格 -->
-      <el-table :data="goodsList" style="width: 100%" border>
-        <el-table-column type="index" width="50"></el-table-column>
-        <el-table-column  label="商品名称" width="180"></el-table-column>
-        <el-table-column  label="商品价格（元）" width="180"></el-table-column>
-        <el-table-column  label="商品重量"></el-table-column>
-           <el-table-column  label="创建时间"></el-table-column>
+      <el-table :data="categoryList" style="width: 100%" border>
        
+        <el-table-column label="分类名称" width="180"></el-table-column>
+        <el-table-column  label="级别" width="180"></el-table-column>
+        <el-table-column  label="是否有效"></el-table-column>
+        
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
@@ -39,6 +29,7 @@
               plain
               icon="el-icon-delete"
             ></el-button>
+          
           </template>
         </el-table-column>
       </el-table>
@@ -49,7 +40,7 @@
       @current-change="handleCurrentChange"
       :current-page="1"
       :page-sizes="[5, 10, 15, 18]"
-      :page-size="5"
+      :page-size="1"
       layout="total, sizes, prev, pager, next, jumper"
       :total="1"
     ></el-pagination>
@@ -58,33 +49,25 @@
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      goodsList: [{},{}],
-     
-     
-   
+    export default{
+        data(){
+            return{
+                categoryList:[{},{}],
+            }
+        }
     };
-  },
   methods: {
-    // 分页器的函数
-    handleSizeChange(val) {
-     
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-    
-      console.log(`当前页: ${val}`);
-    },
+  
+   
   }
-};
+  
+
 </script>
 
 <style  lang="scss" scoped="" type="text/css">
 .usermageement {
   background-color: #e9eef3;
- 
+
   .inputcontent {
     padding-left: 10px;
   }
