@@ -6,17 +6,23 @@ Vue.use(VueRouter);
 import login from './components/login.vue';
 import index from './components/index.vue';
 import users from './components/usermanagement.vue';
+import roles from './components/roles.vue';
+import rights from './components/rights.vue';
 // 设置路由规则
 const routes = [
     {path:'/',component:index,
     children:[
         {path:'users',component:users},
+        {path:'roles',component:roles},
+        {path:'rights',component:rights},
     ]
     },
     {path:'/login',component:login},
     {path:'/index',component:index,
         children:[
             {path:'users',component:users},
+            {path:'roles',component:roles},
+            {path:'rights',component:rights},
         ]
     },
 ]

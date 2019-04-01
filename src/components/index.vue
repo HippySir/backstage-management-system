@@ -77,7 +77,9 @@ export default {
   },
   async created() {
    let res = await this.$axios.get('menus');
+
    this.menulist = res.data.data;
+    this.$router.push("users");
   },
 };
 
