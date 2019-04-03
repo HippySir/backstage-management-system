@@ -3,11 +3,13 @@
     <my-bread secondnav="商品管理" threenav="分类参数"></my-bread>
     <el-alert title="注意：只允许为第三级分类设置相关参数" type="warning"></el-alert>请选择商品的分类：&nbsp;&nbsp;
     <el-cascader
+    
       expand-trigger="hover"
       :options="options"
       v-model="selectedOptions2"
       @change="handleChange"
     ></el-cascader>
+
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="动态参数" name="first">
         <el-button type="primary">添加静态参数</el-button>

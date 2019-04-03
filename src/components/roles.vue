@@ -80,6 +80,22 @@
         <el-button type="primary" @click="deleteRoleoperation">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 权限的弹出框-->
+    <el-dialog title="权限分配" :visible.sync="rightcontrolVisible" width="30%">
+      <el-tree
+        default-expand-all
+        :data="rightrole"
+        show-checkbox
+        node-key="id"
+        :default-expanded-keys="[2, 3]"
+        :default-checked-keys="[5]"
+        
+      ></el-tree>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="rightcontrolVisible = false">取 消</el-button>
+        <el-button type="primary" @click="rightcontrole">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -108,7 +124,11 @@ export default {
       // 删除角色的相关字段
       deleteroleVisible: false,
       deleteroleInfo: {},
-      roleList: []
+      roleList: [],
+      // 编辑权限的相关字段
+      rightcontrolVisible: false,
+      // 权限分配的弹出框
+      rightrole:[],
     };
   },
   methods: {
@@ -148,15 +168,38 @@ export default {
       this.deleteroleInfo = row;
       this.deleteroleVisible = true;
     },
-   async deleteRoleoperation() {
+    async deleteRoleoperation() {
       let res = await this.$axios.delete(`roles/${this.deleteroleInfo.id}`);
-    
-      if(res.data.meta.status === 200 ){
+
+      if (res.data.meta.status === 200) {
         this.getRoles();
-        alert('quni de ');
-      };
+        alert("quni de ");
+      }
       this.deleteroleVisible = false;
     },
+    //权限分配的相关的函数
+    async handleAllot() {
+      this.rightcontrolVisible = true;
+      let res = await this.$axios.get(`rights/tree`);
+      console.log(res);
+     this.processingdata(res.data.data);
+     console.log(res.data.data);
+     this.rightrole = res.data.data;
+     
+      
+    },
+    rightcontrole() {},
+    // 处理数据的递归函数
+    processingdata(num){
+      num.forEach(val=>{
+        val.label = val.authName;
+        console.log(val);
+        console.log(val.label);
+        if(val.children!=undefined){
+            this.processingdata(val.children);
+        }
+      })
+    }
   },
   created() {
     // 页面加载进来的时候加载数据

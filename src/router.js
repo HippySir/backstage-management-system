@@ -13,6 +13,8 @@ import categories from './components/categories.vue';
 import orders from './components/orders.vue';
 import params from './components/params.vue';
 import reports from './components/reports.vue';
+// 测试
+import trytry from './components/trytry.vue';
 // 设置路由规则
 const routes = [
     {path:'/',component:index,
@@ -26,6 +28,7 @@ const routes = [
         {path:'orders',component:orders},
         {path:'params',component:params},
         {path:'reports',component:reports},
+        {path:'trytry',component:trytry},
         
     ]
     },
